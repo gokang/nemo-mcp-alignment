@@ -1,0 +1,37 @@
+# PPO Training Configuration for Atlassian MCP Alignment
+name: ppo_atlassian_mcp_alignment
+
+trainer:
+  devices: 1 # Demo-ready for single GPU/Node
+  num_nodes: 1
+  accelerator: gpu
+  precision: bf16
+  max_steps: 500
+
+model:
+  alignment:
+    type: ppo
+    reward_model_path: "models/mcp_reward_model.nemo"
+    critic_model_path: "models/llama3-8b-critic.nemo"
+    policy_model_path: "models/llama3-8b-base.nemo"
+    
+    ppo:
+      kl_coeff: 0.2 # Higher KL to prevent breaking tool-call syntax
+      ppo_epochs: 1
+      batch_size: 32
+      gamma: 1.0
+      lam: 0.95
+      cliprange: 0.2
+
+  data:
+    train_ds:
+      file_path: "data/mcp_preference_pairs.jsonl"
+      max_seq_length: 1024
+      batch_size: 8
+    validation_ds:
+      file_path: "data/mcp_validation.jsonl"
+      max_seq_length: 1024
+
+  optim:
+    name: distributed_fused_adam
+    lr: 1e-6

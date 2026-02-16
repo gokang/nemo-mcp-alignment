@@ -10,11 +10,20 @@ Standard LLMs often struggle with the precise JSON schemas, multi-step tool chai
 2.  **Optimize multi-hop reasoning:** Reward the model for finding the right data across Confluence before taking action in Jira.
 3.  **Align with Enterprise Safety:** Ensure tool use adheres to permissions and rate limits.
 
+## 🏗️ Real-World Integration
+We have successfully seeded a live Atlassian site (`gokang.atlassian.net`) with:
+- **Jira Project:** `NEMO` (NeMo RL Training)
+- **Incident:** `Critical Latency in Auth Service`
+- **Confluence Knowledge:** `Auth Service Recovery Playbook`
+
+This live site serves as the ground truth environment for validating the model's MCP capabilities post-training.
+
 ## 🛠️ Components
-- `data/mcp_preference_pairs.jsonl`: Training data comparing "vague" vs "precise" MCP tool usage.
-- `configs/ppo_mcp_config.yaml`: NeMo-Aligner config tuned for code/tool-use alignment.
-- `scripts/train_mcp_ppo.py`: Training entry point using `nemo_aligner`.
-- `scripts/mcp_reward_model.py`: Custom reward logic that validates Jira/Confluence API schema adherence.
+- `scripts/mcp_reward_model.py`: The "Judge" that enforces Jira/Confluence API schema.
+- `scripts/seed_atlassian.py`: Tool used to populate the live test environment.
+- `scripts/train_mcp_ppo.py`: NeMo PPO training loop using actual NeMo Aligner APIs.
+- `configs/ppo_mcp_config.yaml`: PPO hyperparameters for tool-use alignment.
+- `data/mcp_preference_pairs.jsonl`: Preference data comparing weak responses vs. multi-hop MCP expertise.
 
 ## 🚀 Scenario: The "Strategic Incident Fixer"
 We align a model to:
